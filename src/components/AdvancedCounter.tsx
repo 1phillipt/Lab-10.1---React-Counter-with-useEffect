@@ -17,7 +17,9 @@ export default function AdvancedCounter() {
   const [step, setStep] = useState<number>(1);
 
   //save UI state
-  const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "changes saving" | "changes saved"
+  >("idle");
 
   useEffect(() => {
     setCountHistory((previousCountHistory) => [...previousCountHistory, count]);
@@ -25,16 +27,15 @@ export default function AdvancedCounter() {
 
   //timeout
   useEffect(() => {
-    setStatus("saving");
+    setStatus("changes saving");
     const timeout = window.setTimeout(() => {
       localStorage.setItem(COUNT_KEY, String(count));
-      setStatus("saved");
+      setStatus("changes saved");
     }, 600);
-
     return () => {
       clearTimeout(timeout);
     };
-  }, [step,count]);
+  }, [step, count]);
 
   //handles the increment
   function increment() {
@@ -47,49 +48,60 @@ export default function AdvancedCounter() {
   }
 
   return (
-    <div className="w-full max-w-lg rounded-xl border bg-white p-6 shadow">
-      <div>
-        <h2 className="text-center text-sm text-gray-600">Counter</h2>
-        <h1>Current Count: {count}</h1>
-      </div>
-      <div className="mt-6 flex items-center justify-center gap-6">
-        <button className="basis-64" onClick={increment}>
-          Increment
-        </button>
-        <button className="basis-64" onClick={decrement}>
-          Decrement
-        </button>
-        <button
-          className="basis-64"
-          onClick={() => {
-            setCount(0);
-            setCountHistory([]);
-            localStorage.removeItem(COUNT_KEY);
-            setStep(1);
-          }}
-        >
-          Reset
-        </button>
-      </div>
-      <div>
-        <label>
-          <input
-            type="number"
-            value={step}
-            onChange={(e) => setStep(Number(e.target.value))}
-          />
-        </label>
-      </div>
-      <p>{status}</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <div className="w-full max-w-lg rounded-xl border bg-white p-8 shadow-lg space-y-6">
+        <div className="text-center space-y-2">
+          <h2 className="text-sm text-gray-500 uppercase tracking-wide">
+            Counter
+          </h2>
+          <h1 className="text-4xl font-bold">{count}</h1>
+        </div>
+        <div className="mt-6 flex items-center justify-center gap-6">
+          <button
+            className="flex-1 rounded-lg bg-blue-500 text-white px-4 py-2 font-medium transition hover:bg-white-600 active:scale-95"
+            onClick={increment}
+          >
+            Increment
+          </button>
+          <button
+            className="flex-1 rounded-lg bg-red-500 text-white px-4 py-2 font-medium transition hover:bg-white-600 active:scale-95"
+            onClick={decrement}
+          >
+            Decrement
+          </button>
+          <button
+            className="basis-64"
+            onClick={() => {
+              setCount(0);
+              setCountHistory([]);
+              localStorage.removeItem(COUNT_KEY);
+              setStep(1);
+            }}
+          >
+            Reset
+          </button>
+        </div>
+        <div>
+          <label>
+            <input
+              type="number"
+              value={step}
+              onChange={(e) => setStep(Number(e.target.value))}
+              className="w-24 border rounded-md px-3 py-1 text-center focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </label>
+        </div>
+        <p>{status}</p>
 
-      <div>
-        <p>Count History</p>
-        {countHistory.map((value, index) => {
-          return <div key={index}>{value}</div>;
-        })}
-      </div>
-      <div>
-        <p>Use ArrowUp to increment and ArrowDown to decrement.</p>
+        <div>
+          <p>Count History</p>
+          {countHistory.map((value, index) => {
+            return <div key={index}>{value}</div>;
+          })}
+        </div>
+        <div>
+          <p>Use ArrowUp to increment and ArrowDown to decrement.</p>
+        </div>
       </div>
     </div>
   );
