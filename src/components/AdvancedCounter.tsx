@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const COUNT_KEY = "count_counter"
 
@@ -13,6 +13,8 @@ export default function AdvancedCounter(){
 
     //seting up state for step
     const [step, setStep] = useState<number>(1);
+
+    useEffect(()=>{setCountHistory((previousCountHistory)=>[...previousCountHistory, count])},[count]);
 
 
 
@@ -46,6 +48,14 @@ export default function AdvancedCounter(){
                 <label>
                     <input type="number" value={step} onChange={(e)=>setStep(Number(e.target.value))}/>
                 </label>
+            </div>
+            <div>
+                <p>Count History</p>
+                {countHistory.map((value,index)=> {
+                   return <div key={index}>
+                        {value}
+                    </div>
+                })}
             </div>
             <div>
                 <p>Use ArrowUp to increment and ArrowDown to decrement.</p>
