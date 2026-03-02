@@ -11,32 +11,44 @@ export default function AdvancedCounter(){
     //history state
     const [countHistory, setCountHistory] = useState<number[]>(()=>[count]);
 
-
     //seting up state for step
     const [step, setStep] = useState<number>(1);
 
 
 
     //handles the increment
-    function handleIncrement(){
+    function increment(){
+        setCount((prev)=>prev+step);
 
     }
 
     //handles decrement
-    function handleDecrement(){
-        
+    function decrement(){
+         setCount((prev)=>prev-step);
     }
 
     return (
         <div className="w-full max-w-lg rounded-xl border bg-white p-6 shadow">
             <div >
                 <h2 className="text-center text-sm text-gray-600">Counter</h2>
-                <h1>Current Count: </h1>
+                <h1>Current Count: {count}</h1>
             </div>
             <div className="mt-6 flex items-center justify-center gap-6">
-                <button className="basis-64">Increment</button>
-                <button className="basis-64">Decrement</button>
-                <button className="basis-64">Reset</button>
+                <button className="basis-64" onClick={increment}>Increment</button>
+                <button className="basis-64" onClick={decrement}>Decrement</button>
+                <button className="basis-64" onClick={()=> {
+                    setCount(0);
+                    setCountHistory([]);
+                    localStorage.removeItem(COUNT_KEY)
+                }}>Reset</button>
+            </div>
+            <div>
+                <label>
+                    <input type="number" value={step} onChange={(e)=>setStep(Number(e.target.value))}/>
+                </label>
+            </div>
+            <div>
+                <p>Use ArrowUp to increment and ArrowDown to decrement.</p>
             </div>
         </div>
     )
